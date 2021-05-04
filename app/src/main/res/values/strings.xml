@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Academy</string>
+    <string name="title_activity_detail_course">Details</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+
+
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="dateline">Dateline</string>
+    <string name="description_course">Overview</string>
+    <string name="example">Example</string>
+    <string name="movie">Movie</string>
+    <string name="tv_shows">TV Shows</string>
+    <string name="next">Next</string>
+    <string name="message_ok">OK</string>
+    <string name="deadline_date">Duration %s</string>
+
+</resources>
