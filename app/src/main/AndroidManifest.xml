@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.movie">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="false"
@@ -13,16 +13,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Academy"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".ui.liked.LikedActivity"></activity>
         <activity
-            android:name="com.example.movie.ui.detail.DetailActivity"
+            android:name=".ui.detail.MainActivity"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".ui.detail.DetailActivity"
             android:label="@string/title_activity_detail_course"
-            android:parentActivityName="com.example.movie.ui.home.HomeActivity"
+            android:parentActivityName=".ui.home.HomeActivity"
             android:theme="@style/Theme.Academy.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.movie.ui.home.HomeActivity" />
         </activity>
-        <activity android:name="com.example.movie.ui.home.HomeActivity">
+        <activity android:name=".ui.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

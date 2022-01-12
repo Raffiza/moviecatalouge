@@ -5,9 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.movie.databinding.FragmentShowBinding
+import com.example.movie.viewmodel.ViewModelFactory
+import com.example.movie.vo.Status
 
 
 class ShowFragment : Fragment(){
@@ -27,16 +30,35 @@ class ShowFragment : Fragment(){
         super.onViewCreated(view, savedInstanceState)
 
         if (activity != null) {
-            val viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory())[ShowViewModel::class.java]
-            val courses = viewModel.getShows()
 
-            val adapter = ShowAdapter()
-            adapter.setCourses(courses)
+            val factory = ViewModelFactory.getInstance(requireActivity())
+            val viewModel = ViewModelProvider(this, factory)[ShowViewModel::class.java]
 
-            with(fragmentshowBinding.rvBookmark) {
+
+            val showAdapter = ShowAdapter()
+
+            fragmentshowBinding.progressBar.visibility = View.VISIBLE
+
+            viewModel.getShows().observe(this,{ shows ->
+                if (shows != null) {
+                    when(shows.status){
+                        Status.LOADING -> fragmentshowBinding.progressBar.visibility = View.VISIBLE
+                        Status.SUCCESS -> {
+                            fragmentshowBinding.progressBar.visibility = View.GONE
+                            showAdapter.submitList(shows.data)
+                        }
+                        Status.ERROR -> {
+                            fragmentshowBinding.progressBar.visibility = View.GONE
+                            Toast.makeText(context,"Terjadi kesalahan", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+
+            })
+            with(fragmentshowBinding.rvShow) {
                 layoutManager = LinearLayoutManager(context)
                 setHasFixedSize(true)
-                this.adapter = adapter
+                this.adapter = showAdapter
             }
         }
     }

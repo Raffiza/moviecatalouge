@@ -1,52 +1,73 @@
 package com.example.movie.ui.movie
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagedListAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.movie.data.Entity
+import com.example.movie.data.source.local.entity.Entity
 import com.example.movie.databinding.ItemsMovieBinding
 import com.example.movie.ui.detail.DetailActivity
 
-class MovieAdapter: RecyclerView.Adapter<MovieAdapter.CourseViewHolder>() {
+class MovieAdapter: PagedListAdapter<Entity,MovieAdapter.MovieViewHolder>(DIFF_CALLBACK) {
 
-    private var listCourses = ArrayList<Entity>()
+    companion object{
+        private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Entity>(){
+            override fun areItemsTheSame(oldItem: Entity, newItem: Entity): Boolean {
+                return oldItem.Id == newItem.Id
+            }
 
-    inner class CourseViewHolder(private val binding: ItemsMovieBinding): RecyclerView.ViewHolder(binding.root){
-        fun bind(course: Entity){
+            override fun areContentsTheSame(oldItem: Entity, newItem: Entity): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+
+    private var listMovie = ArrayList<Entity>()
+
+    inner class MovieViewHolder(private val binding: ItemsMovieBinding): RecyclerView.ViewHolder(binding.root){
+        fun bind(movie: Entity){
             with(binding) {
-                tvItemTitle.text = course.title
-                tvItemDate.text = course.duration
-                tvItemDesc.text = course.description
+                tvItemTitle.text = movie.title
+                tvItemDate.text = movie.duration
+                tvItemDesc.text = movie.description
 
                 itemView.setOnClickListener {
                     val intent = Intent(itemView.context, DetailActivity::class.java)
-                    intent.putExtra(DetailActivity.EXTRA_COURSE,course.Id)
+                    intent.putExtra(DetailActivity.EXTRA_ID,movie.Id)
+                    intent.putExtra(DetailActivity.EXTRA_TITLE,movie.title)
                     itemView.context.startActivity(intent)
                 }
                 Glide.with(itemView.context)
-                        .load(course.imagePath)
+                        .load("https://www.themoviedb.org/t/p/w600_and_h900_bestv2${movie.imagePath}")
                         .into(imgPoster)
             }
         }
     }
 
-    fun setCourses(courses: List<Entity>?) {
-        if (courses == null) return
-        this.listCourses.clear()
-        this.listCourses.addAll(courses)
+    fun setMovies(movies: List<Entity>?) {
+        if (movies == null) return
+        this.listMovie.clear()
+        this.listMovie.addAll(movies)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CourseViewHolder {
-        val itemsAcademyBinding = ItemsMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CourseViewHolder(itemsAcademyBinding)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
+        val itemsMovieBinding = ItemsMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MovieViewHolder(itemsMovieBinding)
     }
 
-    override fun onBindViewHolder(holder: CourseViewHolder, position: Int) {
-        val course = listCourses[position]
-        holder.bind(course)
+    override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
+        val movie = getItem(position)
+        if (movie != null){
+            holder.bind(movie)
+        }
+        else{
+            Log.i("movie","null")
+        }
     }
 
-    override fun getItemCount(): Int = listCourses.size
+    fun getSwipedData(swipedPosition: Int): Entity? = getItem(swipedPosition)
 }
